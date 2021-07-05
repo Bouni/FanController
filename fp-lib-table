@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "bouni")(type "KiCad")(uri "${KIPRJMOD}/bouni.pretty")(options "")(descr ""))
+)

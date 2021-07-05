@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name "mh-et-live-minikit")(type "KiCad")(uri "${KIPRJMOD}/lib/mh-et-live-minikit.kicad_sym")(options "")(descr ""))
+  (lib (name "bouni")(type "KiCad")(uri "${KIPRJMOD}/lib/bouni.kicad_sym")(options "")(descr ""))
+)
