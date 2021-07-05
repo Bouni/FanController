@@ -29,3 +29,9 @@ fp-info-cache
 
 # PDF files
 *.pdf
+
+# Backups
+*-backups*
+
+# Gerber files
+gerber
