@@ -1,0 +1,95 @@
+---
+substitutions:
+  devicename: "fancontroller-1"
+  upper_devicename: "Fan controller 1"
+  # GPIO config
+  fan_1_power_pin: GPIO16
+  fan_1_pwm_pin: GPIO17
+  fan_2_power_pin: GPIO21
+  fan_2_pwm_pin: GPIO22
+  status_led_pin: GPIO2
+
+esphome:
+  name: $devicename
+  platform: ESP32
+  board: mhetesp32minikit
+
+# Wifi settings
+wifi:
+  networks:
+    - ssid: !secret wifi_home_ssid
+      password: !secret wifi_home_password
+    - ssid: !secret wifi_work_ssid
+      password: !secret wifi_work_password
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Enable over the air updates
+ota:
+
+# Enable Web server
+web_server:
+  port: 80
+
+
+# see: https://esphome.io/components/time.html
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+
+text_sensor:
+  - platform: version
+    name: "Version"
+    icon: mdi:cube-outline
+  - platform: wifi_info
+    ip_address:
+      name: ip
+    ssid:
+      name: ssid
+    bssid:
+      name: bssid
+
+switch:
+  # Switch to restart the fancontroller
+  - platform: restart
+    name: restart
+
+output:
+  - platform: ledc
+    pin: ${fan_1_pwm_pin}
+    id: fan_1_speed
+    frequency: "2441Hz"
+  - platform: gpio
+    id: fan_1_power
+    pin: ${fan_1_power_pin}
+
+  - platform: ledc
+    pin: ${fan_2_pwm_pin}
+    id: fan_2_speed
+    frequency: "2441Hz"
+  - platform: gpio
+    id: fan_2_power
+    pin: ${fan_2_power_pin}
+
+fan:
+  - platform: speed
+    name: "Fan 1"
+    output: fan_1_speed
+    on_turn_on:
+        - output.turn_on: fan_1_power
+    on_turn_off: 
+        - output.turn_off: fan_1_power
+  - platform: speed
+    name: "Fan 2"
+    output: fan_2_speed
+    on_turn_on:
+        - output.turn_on: fan_2_power
+    on_turn_off: 
+        - output.turn_off: fan_2_power
+
+
