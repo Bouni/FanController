@@ -59,6 +59,24 @@ switch:
   - platform: restart
     name: restart
 
+  - platform: template
+    name: fans
+    turn_on_action:
+      then:
+      - output.turn_on: fan_1_power
+      - output.turn_on: fan_2_power
+      - output.set_level:
+          id: fan_1_speed
+          level: "50%"
+      - output.set_level:
+          id: fan_2_speed
+          level: "50%"
+    turn_off_action:
+      then:
+      - output.turn_off: fan_1_power
+      - output.turn_off: fan_2_power
+
+
 output:
   - platform: ledc
     pin: ${fan_1_pwm_pin}
@@ -75,21 +93,5 @@ output:
   - platform: gpio
     id: fan_2_power
     pin: ${fan_2_power_pin}
-
-fan:
-  - platform: speed
-    name: "Fan 1"
-    output: fan_1_speed
-    on_turn_on:
-        - output.turn_on: fan_1_power
-    on_turn_off: 
-        - output.turn_off: fan_1_power
-  - platform: speed
-    name: "Fan 2"
-    output: fan_2_speed
-    on_turn_on:
-        - output.turn_on: fan_2_power
-    on_turn_off: 
-        - output.turn_off: fan_2_power
 
 
