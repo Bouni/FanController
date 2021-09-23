@@ -59,29 +59,47 @@ switch:
   - platform: restart
     name: restart
 
+  select:
   - platform: template
-    name: fans
-    turn_on_action:
+    name: "Fan Speed"
+    optimistic: true
+    options:
+      - AUS
+      - Stufe 1
+      - Stufe 2
+      - Stufe 3
+    initial_option: AUS
+    on_value:
       then:
-      - output.turn_on: fan_1_power
-      - output.turn_on: fan_2_power
-      - output.set_level:
-          id: fan_1_speed
-          level: "50%"
-      - output.set_level:
-          id: fan_2_speed
-          level: "50%"
-    turn_off_action:
-      then:
-      - output.turn_off: fan_1_power
-      - output.turn_off: fan_2_power
-
+        lambda: !lambda |-
+          if (x == "AUS") {
+            id(fan_1_power).turn_off();
+            id(fan_2_power).turn_off();
+          } else if (x == "Stufe 1") {
+            id(fan_1_speed).set_level(0.75);
+            id(fan_2_speed).set_level(0.75);
+            id(fan_1_power).turn_on();
+            id(fan_2_power).turn_on();
+          } else if (x == "Stufe 2") {
+            id(fan_1_speed).set_level(0.5);
+            id(fan_2_speed).set_level(0.5);
+            id(fan_1_power).turn_on();
+            id(fan_2_power).turn_on();
+          } else if (x == "Stufe 3") {
+            id(fan_1_speed).set_level(0.25);
+            id(fan_2_speed).set_level(0.25);
+            id(fan_1_power).turn_on();
+            id(fan_2_power).turn_on();
+          }
 
 output:
   - platform: ledc
     pin: ${fan_1_pwm_pin}
     id: fan_1_speed
     frequency: "2441Hz"
+    min_power: 0
+    max_power: 0.5
+
   - platform: gpio
     id: fan_1_power
     pin: ${fan_1_power_pin}
@@ -90,8 +108,9 @@ output:
     pin: ${fan_2_pwm_pin}
     id: fan_2_speed
     frequency: "2441Hz"
+    min_power: 0
+    max_power: 0.5
+
   - platform: gpio
     id: fan_2_power
     pin: ${fan_2_power_pin}
-
-
