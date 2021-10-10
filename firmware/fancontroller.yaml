@@ -1,7 +1,7 @@
 ---
 substitutions:
   devicename: "fancontroller-1"
-  upper_devicename: "Fan controller 1"
+  realname: "Ferienwohnung Lüfter 1"
   # GPIO config
   fan_1_power_pin: GPIO16
   fan_1_pwm_pin: GPIO17
@@ -17,14 +17,21 @@ esphome:
 # Wifi settings
 wifi:
   networks:
-    - ssid: !secret wifi_home_ssid
-      password: !secret wifi_home_password
-    - ssid: !secret wifi_work_ssid
-      password: !secret wifi_work_password
+    - ssid: !secret wifi_wasenweg_ssid
+      password: !secret wifi_wasenweg_password
+    - ssid: !secret wifi_kreuzaecker_ssid
+      password: !secret wifi_kreuzaecker_password
+  ap:
+    ssid: ${realname} Hotspot
+    password: !secret wifi_hotspot_password
+
+captive_portal:
+
+debug:
 
 # Enable logging
 logger:
-
+  level: debug
 # Enable Home Assistant API
 api:
 
@@ -54,14 +61,18 @@ text_sensor:
     bssid:
       name: bssid
 
+status_led:
+  pin: ${status_led_pin}
+
 switch:
   # Switch to restart the fancontroller
   - platform: restart
     name: restart
 
-  select:
+select:
   - platform: template
-    name: "Fan Speed"
+    name: ${realname} 
+    icon: "mdi:fan"
     optimistic: true
     options:
       - AUS
